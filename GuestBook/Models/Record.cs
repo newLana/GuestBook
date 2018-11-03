@@ -16,14 +16,7 @@ namespace GuestBook.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if(String.IsNullOrWhiteSpace(Text))
-            {
-                yield return new ValidationResult("Field Text can't be an empty!");
-            }
-            if(String.IsNullOrEmpty(Author))
-            {
-                yield return new ValidationResult("Field Author can't be an empty!");
-            }
+            return Validation.RecordValidator.ValidateRecordModel(this);        
         }
     }
 }

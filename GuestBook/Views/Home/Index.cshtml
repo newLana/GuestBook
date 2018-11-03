@@ -32,7 +32,8 @@
             @Html.DisplayFor(modelItem => item.Author)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RecordDate.Date)
+
+            @Html.DisplayFor(modelItem => item.RecordDate)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |

@@ -25,7 +25,7 @@ namespace GuestBook.Controllers
         {
             if(ModelState.IsValid)
             {
-                record.RecordDate = DateTime.Now.Date;
+                record.RecordDate = DateTime.Now;
                 repository.Create(record);
                 return RedirectToAction("Index");
             }
@@ -55,16 +55,27 @@ namespace GuestBook.Controllers
             return View(record);
         }        
         
+        [HttpGet]
         public ActionResult Delete(int id)
         {
             Record record = repository.Find(id);
             if (record != null)
             {
-                repository.Delete(id);
+                return View(record);
             }
             return RedirectToAction("Index");
-        }        
-        
+        }
+
+        [HttpPost]
+        public ActionResult Delete(Record record)
+        {            
+            if (repository.Find(record.Id) != null)
+            {
+                repository.Delete(record.Id);                
+            }
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         public ActionResult Details(int id)
         {
@@ -74,6 +85,6 @@ namespace GuestBook.Controllers
                 return View(record);
             }
             return RedirectToAction("Index");
-        }
+        }       
     }
 }
