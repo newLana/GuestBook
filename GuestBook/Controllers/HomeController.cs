@@ -6,12 +6,17 @@ namespace GuestBook.Controllers
 {
     public class HomeController : Controller
     {
-        static IRepository repository = new AdoRepository();
+        IRepository _repository;
+
+        public HomeController()
+        {
+            _repository = new AdoRepository();
+        }
 
         // GET: Home
         public ActionResult Index()
         {
-            return View(repository.GetRecords());
+            return View(_repository.GetRecords());
         }
 
         [HttpGet]
@@ -25,8 +30,8 @@ namespace GuestBook.Controllers
         {
             if(ModelState.IsValid)
             {
-                record.RecordDate = DateTime.Now;
-                repository.Create(record);
+                record.CreationDate = DateTime.Now;
+                _repository.Create(record);
                 return RedirectToAction("Index");
             }
             return View(record);
@@ -35,7 +40,7 @@ namespace GuestBook.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            Record record = repository.Find(id);
+            Record record = _repository.Find(id);
             if (record != null)
             {
                 return View(record);
@@ -48,8 +53,8 @@ namespace GuestBook.Controllers
         {            
             if (ModelState.IsValid)
             {
-                record.RecordDate = DateTime.Now.Date;
-                repository.Update(record);
+                record.UpdationDate = DateTime.Now;
+                _repository.Update(record);
                 return RedirectToAction("Index");
             }
             return View(record);
@@ -58,7 +63,7 @@ namespace GuestBook.Controllers
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            Record record = repository.Find(id);
+            Record record = _repository.Find(id);
             if (record != null)
             {
                 return View(record);
@@ -69,9 +74,9 @@ namespace GuestBook.Controllers
         [HttpPost]
         public ActionResult Delete(Record record)
         {            
-            if (repository.Find(record.Id) != null)
+            if (_repository.Find(record.Id) != null)
             {
-                repository.Delete(record.Id);                
+                _repository.Delete(record.Id);                
             }
             return RedirectToAction("Index");
         }
@@ -79,7 +84,7 @@ namespace GuestBook.Controllers
         [HttpGet]
         public ActionResult Details(int id)
         {
-            Record record = repository.Find(id);
+            Record record = _repository.Find(id);
             if (record != null)
             {
                 return View(record);

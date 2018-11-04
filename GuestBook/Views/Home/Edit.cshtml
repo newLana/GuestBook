@@ -6,31 +6,44 @@
 
 <h2>Edit</h2>
 
-<form method="post">
-    @*@Html.AntiForgeryToken()*@
-
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
     <div class="form-horizontal">
         <h4>Record</h4>
         <hr />
-        @Html.ValidationSummary()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Text, 5, 50, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label col-md-2" })
-            <span>@Model.Author</span>
+            <div class="col-md-10">
+                @Html.DisplayTextFor(model => model.Author)
+                @Html.HiddenFor(model => model.Author)
+
+            </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RecordDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CreationDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <span>@Model.RecordDate.ToShortDateString()</span>
+                @Html.DisplayTextFor(model => model.CreationDate)
+                @Html.HiddenFor(model => model.CreationDate)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UpdationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayTextFor(model => model.UpdationDate) 
             </div>
         </div>
 
@@ -40,7 +53,7 @@
             </div>
         </div>
     </div>
-</form>
+}
 
 <div>
     @Html.ActionLink("Back to List", "Index")

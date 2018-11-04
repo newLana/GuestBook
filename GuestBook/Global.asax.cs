@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GuestBook.Controllers;
+using GuestBook.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;

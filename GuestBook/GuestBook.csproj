@@ -88,10 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\GB.mdf" />
-    <Content Include="App_Data\GB_log.ldf">
-      <DependentUpon>GB.mdf</DependentUpon>
-    </Content>
+    <Content Include="App_Data\Setup.sql" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
@@ -105,7 +102,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Web.config" />
     <Content Include="Views\Home\Create.cshtml" />
-    <Content Include="Views\Home\Edit.cshtml" />
     <Content Include="Views\Home\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +127,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Delete.cshtml" />
+    <Content Include="Views\Home\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

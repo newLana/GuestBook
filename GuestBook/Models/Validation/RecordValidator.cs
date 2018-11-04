@@ -1,31 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace GuestBook.Models.Validation
 {
-    public static class RecordValidator
+    public class RecordValidator
     {
-        public static IEnumerable<ValidationResult> ValidateRecordModel(Record record)
+        ICollection<ValidationResult> validationResults = new HashSet<ValidationResult>();
+
+        private Record _record;
+
+        private bool IsTextExists()
         {
-            if (String.IsNullOrWhiteSpace(record.Text))
+            if (String.IsNullOrWhiteSpace(_record.Text))
             {
-                yield return new ValidationResult("Field Text can't be an empty!");
+                validationResults.Add(new ValidationResult("Field Text can't be an empty!"));
+                return false;
             }
-            if (String.IsNullOrEmpty(record.Author))
+            return true;
+        }
+
+        private bool IsAuthorExists()
+        {
+            if (String.IsNullOrWhiteSpace(_record.Author))
             {
-                yield return new ValidationResult("Field Author can't be an empty!");
+                validationResults.Add(new ValidationResult("Field Author can't be an empty!"));
+                return false;
             }
-            if(record.Author.Length > 30)
+            return true;
+        }
+
+        private void IsAuthorLengthValid()
+        {
+            if (_record.Author.Length > 30)
             {
-                yield return new ValidationResult("Too long name. Its greater then 30 symbols.");
+               validationResults.Add(new ValidationResult("Too long name. Its greater then 30 symbols."));
             }
-            if(record.Text.Length > 300)
+        }
+
+        private void IsTextLengthValid()
+        {
+            if (_record.Text.Length > 300)
             {
-                yield return new ValidationResult("Too long text. Its greater then 300 symbols.");
+               validationResults.Add(new ValidationResult("Too long text. Its greater then 300 symbols."));
             }
+        }
+
+        public IEnumerable<ValidationResult> ValidateRecordModel(Record record)
+        {
+            _record = record;                        
+            if (IsAuthorExists())
+            {
+                IsAuthorLengthValid();
+            }
+            if (IsTextExists())
+            {
+                IsTextLengthValid();
+            }
+            return validationResults;
         }
     }
 }

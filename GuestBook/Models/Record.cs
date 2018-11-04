@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GuestBook.Models.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,11 +13,13 @@ namespace GuestBook.Models
 
         public string Author { get; set; }
 
-        public DateTime RecordDate { get; set; }
+        public DateTime CreationDate { get; set; }
+
+        public DateTime UpdationDate { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            return Validation.RecordValidator.ValidateRecordModel(this);        
+            return new RecordValidator().ValidateRecordModel(this);        
         }
     }
 }

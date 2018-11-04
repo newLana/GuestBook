@@ -1,129 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
+using System.Configuration;
 
 namespace GuestBook.Models
 {
     public class AdoRepository : IRepository
-    {       
-        string connectionString = System.Configuration.ConfigurationManager.
-            ConnectionStrings["Default"].ConnectionString;
-
-        public void Create(Record record)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                var command = connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO Records (Text, Author, RecordDate)" +
-                    @" VALUES (@Text, @Author, @RecordDate) ";
-
-                command.Parameters.AddRange(new SqlParameter[] 
-                {
-                    new SqlParameter("@Text", record.Text),
-                    new SqlParameter("@Author", record.Author),
-                    new SqlParameter("@RecordDate", record.RecordDate)
-                });
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public void Delete(int id)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                var command = connection.CreateCommand();
-
-                command.CommandText = "DELETE FROM Records WHERE Id = @id";
-
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                connection.Open();
-
-                int res = command.ExecuteNonQuery();
-            }
-        }
-
-        public Record Find(int id)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                var command = connection.CreateCommand();
-
-                command.CommandText = "SELECT Id, Text, Author, RecordDate " +
-                    "FROM Records WHERE Id = @id";
-
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                connection.Open();
-
-                Record record = null;
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while(reader.Read())
-                    {
-                        record = new Record
-                        {
-                            Id = reader.GetInt32(0),
-                            Text = reader.GetString(1),
-                            Author = reader.GetString(2),
-                            RecordDate = reader.GetDateTime(3)
-                        };
-                    }
-                }
-                return record;
-            }
-        }
+    {
+        string connectionString = ConfigurationManager.ConnectionStrings["Default"]
+                                .ConnectionString;
+        private static IEnumerable<Record> _records;
 
         public IEnumerable<Record> GetRecords()
         {
+            if (_records == null)
+                _records = ReadAll();
+            return _records;
+        }
+
+        private IEnumerable<Record> ReadAll()
+        {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 var command = connection.CreateCommand();
-
-                command.CommandText = "SELECT Id, Text, Author, RecordDate FROM Records";
-
+                command.CommandText = "SELECT Id, Text, Author, CreationDate, UpdationDate FROM Records";
                 List<Record> records = new List<Record>();
-
                 connection.Open();
-
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while(reader.Read())
+                    while (reader.Read())
                     {
-                        records.Add(new Record()
+                        records.Add(new Record
                         {
                             Id = reader.GetInt32(0),
                             Text = reader.GetString(1),
                             Author = reader.GetString(2),
-                            RecordDate = reader.GetDateTime(3)
-                        });
+                            CreationDate = reader.GetDateTime(3),
+                            UpdationDate = reader.GetDateTime(4)
+                        });                        
                     }
                 }
                 return records;
             }
         }
 
+        public Record Find(int id)
+        {
+            return GetRecords().FirstOrDefault(r => r.Id == id);            
+        }
+
+        public void Create(Record record)
+        {
+            string commandText = "INSERT INTO Records (Text, Author, CreationDate, UpdationDate)" +
+                " VALUES (@text, @author, @creationDate, @updDate) ";
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@text", record.Text),
+                new SqlParameter("@author", record.Author),
+                new SqlParameter("@creationDate", record.CreationDate),
+                new SqlParameter("@updDate", record.CreationDate)
+            };
+            NonQueryOperations(commandText, parameters);
+        }
+
         public void Update(Record record)
+        {
+            string commandText = "UPDATE Records SET Text = @text, " +
+                "UpdationDate = @updDate WHERE Id = @id";
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@text", record.Text),
+                new SqlParameter("@id", record.Id),
+                new SqlParameter("@updDate", record.UpdationDate)
+            };
+            NonQueryOperations(commandText, parameters);
+        }
+
+        public void Delete(int id)
+        {
+            string commandText = "DELETE FROM Records WHERE Id = @id";
+            var parameters = new SqlParameter[] { new SqlParameter("@id", id) };
+            NonQueryOperations(commandText, parameters);
+        }
+
+        private void NonQueryOperations(string commandText, SqlParameter[] parameters)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                var command = connection.CreateCommand();
-
-                command.CommandText = "UPDATE Records SET Text = @Text WHERE Id = @id";
-
-                command.Parameters.Add(new SqlParameter("@Text", record.Text));
-                command.Parameters.Add(new SqlParameter("@id", record.Id));
-
+                SqlCommand command = new SqlCommand(commandText, connection);
+                command.Parameters.AddRange(parameters);
                 connection.Open();
-
-                command.ExecuteNonQuery();
+                object locker = new object();
+                lock (locker)
+                {
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        _records = ReadAll();
+                    }
+                }
             }
         }
     }
