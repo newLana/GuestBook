@@ -23,7 +23,8 @@ namespace GuestBook.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT Id, Text, Author, CreationDate, UpdationDate FROM Records";
+                command.CommandText = "SELECT Id, Text, Author, CreationDate, UpdationDate" +
+                                        " FROM Records";
                 List<Record> records = new List<Record>();
                 connection.Open();
                 using (SqlDataReader reader = command.ExecuteReader())

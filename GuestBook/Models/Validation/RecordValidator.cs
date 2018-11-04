@@ -6,7 +6,7 @@ namespace GuestBook.Models.Validation
 {
     public class RecordValidator
     {
-        ICollection<ValidationResult> validationResults = new HashSet<ValidationResult>();
+        ICollection<ValidationResult> validationResults = new List<ValidationResult>();
 
         private Record _record;
 

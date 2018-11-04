@@ -7,7 +7,7 @@ namespace GuestBook.Models.DAL.EF
 {
     public class EfRepository : IRepository
     {
-        private GuestBookContext _db = new GuestBookContext();
+        private static GuestBookContext _db = new GuestBookContext();
 
         public void Create(Record record)
         {
