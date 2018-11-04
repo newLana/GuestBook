@@ -1,16 +1,17 @@
 ﻿using GuestBook.Models;
+using GuestBook.Models.DAL.EF;
 using System;
 using System.Web.Mvc;
 
 namespace GuestBook.Controllers
 {
     public class HomeController : Controller
-    {
+    {       
         IRepository _repository;
 
-        public HomeController()
+        public HomeController(IRepository repository)
         {
-            _repository = new AdoRepository();
+            _repository = repository;
         }
 
         // GET: Home
@@ -31,6 +32,7 @@ namespace GuestBook.Controllers
             if(ModelState.IsValid)
             {
                 record.CreationDate = DateTime.Now;
+                record.UpdationDate = DateTime.Now;
                 _repository.Create(record);
                 return RedirectToAction("Index");
             }

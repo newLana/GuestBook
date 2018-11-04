@@ -43,6 +43,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -110,8 +116,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DAL\AdoRepository.cs" />
+    <Compile Include="Models\DAL\ADO\AdoRepository.cs" />
+    <Compile Include="Models\DAL\EF\EfRepository.cs" />
+    <Compile Include="Models\DAL\EF\GuestBookContext.cs" />
     <Compile Include="Models\DAL\IRepository.cs" />
+    <Compile Include="Models\DI\GuestBookDependencyResolver.cs" />
     <Compile Include="Models\Record.cs" />
     <Compile Include="Models\Validation\RecordValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
